@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#101a35">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='2' y='9' width='8' height='17' rx='2' fill='%23ffe05c'/%3E%3Crect x='12' y='4' width='8' height='22' rx='2' fill='%23ff765c'/%3E%3Crect x='22' y='13' width='8' height='13' rx='2' fill='%23a176ff'/%3E%3C/svg%3E">
+  <title>Blocktopia — Play your way</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="game-shell">
+    <canvas id="game" aria-label="Blocktopia obby game"></canvas>
+    <div class="vignette"></div>
+    <header class="topbar">
+      <button class="brand" id="homeBtn" aria-label="Go to home"><span class="brand-mark"><i></i><i></i><i></i></span><span>blocktopia</span></button>
+      <div class="world-title"><span class="live-dot"></span><div><b>SKYBOUND OBBY</b><small>WORLD 01 · CLOUD KINGDOM</small></div></div>
+      <div class="top-actions"><div class="players"><span class="avatar-mini">✦</span><b>1.2k</b><span>playing</span></div><button class="icon-btn sound-btn" id="soundBtn" aria-label="Toggle sound">♫</button><button class="icon-btn" id="pauseBtn" aria-label="Pause game">Ⅱ</button></div>
+    </header>
+
+    <section class="hud-left">
+      <div class="profile-card"><div class="player-face"><span class="face-hair"></span><span class="face-eye e1"></span><span class="face-eye e2"></span><span class="face-smile"></span></div><div class="profile-copy"><b>SkyRunner</b><span>LEVEL <strong id="level">01</strong> <i>•</i> BEGINNER</span></div><button class="edit-avatar" id="avatarBtn" aria-label="Customize avatar">✎</button></div>
+      <div class="stat-card"><div class="stat-icon star">★</div><div><small>STARS COLLECTED</small><b><span id="stars">0</span><em> / 8</em></b></div><div class="stat-track"><i id="starBar"></i></div></div>
+      <div class="stat-card coin-card"><div class="stat-icon coin">◉</div><div><small>BLOCKBUCKS</small><b id="coins">125</b></div><button class="plus-btn" aria-label="More blockbucks">＋</button></div>
+    </section>
+
+    <section class="quest-card"><div class="quest-heading"><span>DAILY QUEST</span><span class="quest-badge">+50 <i>✦</i></span></div><b>Cloud hopper</b><p>Jump across the sky platforms<br>without falling!</p><div class="quest-progress"><div><span id="questCount">0</span> / 8 stars</div><span class="quest-line"><i id="questBar"></i></span></div></section>
+
+    <div class="zone-chip"><span class="zone-icon">☁</span><div><small>YOU ARE EXPLORING</small><b id="zoneName">Cloudstep Meadow</b></div><span class="zone-arrow">⌄</span></div>
+    <div class="toast" id="toast"><span>✦</span><b>Nice! Star collected</b></div>
+
+    <div class="center-message" id="centerMessage"><div class="message-card"><span class="message-icon">☁</span><h1>Ready, block builder?</h1><p>Jump into a bright new world and see how far you can go.</p><button class="primary-btn" id="startBtn">PLAY NOW <span>→</span></button><div class="message-hint">WASD / ARROWS TO MOVE <i>·</i> SPACE TO JUMP</div></div></div>
+    <div class="modal-backdrop hidden" id="modalBackdrop"><div class="modal" id="modal"></div></div>
+
+    <div class="mobile-controls" aria-label="Touch controls"><div class="move-pad"><button data-key="left" aria-label="Move left">‹</button><button data-key="right" aria-label="Move right">›</button></div><button class="jump-btn" data-key="jump" aria-label="Jump"><span>↑</span><small>JUMP</small></button></div>
+    <div class="bottom-hud"><div class="control-tip"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd><span>Move</span><i></i><kbd>SPACE</kbd><span>Jump</span></div><div class="checkpoint"><span class="check-icon">⚑</span><div><small>CHECKPOINT</small><b id="checkpointText">START ISLAND</b></div><span class="check-status">●</span></div><div class="progress-wrap"><div class="progress-label"><span>OBBY PROGRESS</span><b id="progressText">0%</b></div><div class="progress-track"><i id="progressBar"></i></div></div></div>
+    <div class="finish-banner" id="finishBanner"><span>🏆</span><div><b>OBBY COMPLETE!</b><small>You made it to the sky palace!</small></div><button id="replayBtn">PLAY AGAIN ↗</button></div>
+  </main>
+  <script src="game.js"></script>
+</body>
+</html>
