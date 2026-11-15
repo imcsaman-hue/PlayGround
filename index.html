@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <meta name="theme-color" content="#8fd9ec" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23f47b35'/%3E%3Ctext x='32' y='46' font-family='Arial' font-size='38' font-weight='900' fill='white' text-anchor='middle'%3EB!%3C/text%3E%3C/svg%3E" />
+  <title>Birds &amp; Bad Piggies — Skyway Scramble 3D</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="game-shell menu-open">
+    <canvas id="game" aria-label="Birds and Bad Piggies game"></canvas>
+    <div class="topbar">
+      <button class="brand" id="homeBtn" title="Back to menu"><span class="brand-mark">B!</span><span>SKYWAY <b>SCRAMBLE</b></span></button>
+      <div class="level-name"><span class="chapter" id="chapterLabel">CHAPTER 01 · 3D ISLAND</span><strong id="levelTitle">PIGGY PEAK</strong></div>
+      <div class="top-actions"><button class="icon-btn" id="soundBtn" aria-label="Toggle sound">♫</button><button class="icon-btn" id="pauseBtn" aria-label="Pause">Ⅱ</button></div>
+    </div>
+    <div class="hud-left"><div class="mission-card"><span class="mission-icon">🎯</span><div><small>MISSION</small><strong id="missionText">Knock down the pig fort!</strong></div></div><div class="score-card"><small id="scoreLabel">SCORE</small><strong id="score">000000</strong></div></div>
+    <div class="level-progress"><div class="progress-track"><i id="progressFill"></i></div><span id="progressText">0 / 3 PIGS</span></div>
+    <div id="birdTray" class="bird-tray"><span class="tray-label">BIRDS</span><div id="birdIcons"></div></div>
+    <div class="mode-switch"><button id="attackTab" class="mode-tab active"><span>🐦</span> ANGRY BIRDS</button><button id="buildTab" class="mode-tab"><span>🛠</span> BAD PIGGIES</button></div>
+    <div id="buildPanel" class="build-panel hidden">
+      <div class="panel-title"><span>🛠</span><div><b>SCRAPYARD</b><small>Build a getaway ride</small></div></div>
+      <div class="parts-row"><button class="part active" data-part="wood"><span class="part-icon wood-icon">▰</span><b>WOOD</b></button><button class="part" data-part="wheel"><span class="part-icon wheel-icon">◉</span><b>WHEEL</b></button><button class="part" data-part="balloon"><span class="part-icon balloon-icon">🎈</span><b>BALLOON</b></button></div>
+      <div class="panel-hint" id="buildHint">Add a wheel, a balloon and some wood. Then DRIVE!</div>
+      <div class="build-actions"><button id="undoBtn" class="soft-btn">↶ UNDO</button><button id="clearBtn" class="soft-btn">CLEAR</button><button id="driveBtn" class="drive-btn">▶ DRIVE</button></div>
+    </div>
+    <div id="actionHint" class="action-hint"><span class="hint-key">DRAG</span> PULL BACK <span class="hint-arrow">→</span> RELEASE TO LAUNCH</div>
+    <div class="bottom-controls"><button id="resetBtn" class="round-control" title="Restart level">↻</button><div class="control-tip" id="controlTip">Drag the bird back, then let it fly!</div><button id="nextBtn" class="next-btn hidden">NEXT LEVEL <span>→</span></button></div>
+    <div id="notice" class="notice"></div>
+    <div id="modal" class="modal"><div class="modal-card"><div class="modal-logo">B!</div><p class="eyebrow">A WILDLY WOBBLY ADVENTURE</p><h1>SKYWAY<br><em>SCRAMBLE</em></h1><p class="modal-copy">Launch the flock. Outsmart the pigs.<br>Then build a getaway contraption of your own.</p><div class="mode-cards"><button id="playAttack" class="choice-card"><span class="choice-art bird-art">🐦</span><b>ANGRY BIRDS</b><small>Smash the piggy forts</small><span class="choice-arrow">PLAY →</span></button><button id="playBuild" class="choice-card pig-card"><span class="choice-art">🐷</span><b>BAD PIGGIES</b><small>Build, crash &amp; cackle</small><span class="choice-arrow">BUILD →</span></button></div><div class="modal-foot">A tiny island. A very big grudge.</div></div></div>
+    <div id="pauseOverlay" class="pause-overlay hidden"><div class="pause-card"><span>⏸</span><h2>TAKE A BREATHER</h2><p>The pigs aren't going anywhere. Probably.</p><button id="resumeBtn" class="drive-btn">BACK TO THE ACTION</button></div></div>
+    <div id="resultOverlay" class="result-overlay hidden"><div class="result-card"><div id="resultEmoji" class="result-emoji">🏆</div><p class="eyebrow" id="resultEyebrow">FORT DOWN!</p><h2 id="resultTitle">PIGS DEFEATED</h2><p id="resultCopy">The flock is flying high.</p><div class="result-score"><small>FINAL SCORE</small><b id="resultScore">000000</b></div><button id="resultButton" class="drive-btn">PLAY AGAIN <span>→</span></button><button id="menuButton" class="text-btn">BACK TO MAIN MENU</button></div></div>
+  </main>
+  <script type="module" src="game.js"></script>
+</body>
+</html>
