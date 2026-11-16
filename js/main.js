@@ -182,7 +182,10 @@ function setScreen(name) {
   document.body.classList.toggle('in-game', name === 'playing');
   if (name !== 'editor') $('hud').classList.add('hidden');
   if (name !== 'editor' && world.cursor) world.cursor.visible = false;
-  document.querySelectorAll('.nav-link').forEach(b => b.classList.toggle('active', b.dataset.screen === name));
+  document.querySelectorAll('.nav-link').forEach(b => {
+    const active = b.dataset.screen === name || (name === 'menu' && b.dataset.action === 'play');
+    b.classList.toggle('active', active);
+  });
 }
 
 function hideModals() {
@@ -1080,7 +1083,7 @@ canvas.addEventListener('pointerdown', e => {
     if (jumpPointer) return;
     jumpPointer = true;
     world.jump();
-    canvas.setPointerCapture?.(e.pointerId);
+    try { canvas.setPointerCapture?.(e.pointerId); } catch {}
   }
 });
 canvas.addEventListener('pointerup', () => {
@@ -1101,7 +1104,7 @@ function bindTouchButton(id, down, up) {
     e.stopPropagation();
     if (state !== 'playing') return;
     down();
-    if (up) el.setPointerCapture?.(e.pointerId);
+    if (up) { try { el.setPointerCapture?.(e.pointerId); } catch {} }
   });
   if (up) {
     const release = e => {

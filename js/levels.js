@@ -115,6 +115,14 @@ export function generateEvents(level) {
 
     if (pattern === 'single') {
       const n = diff < 0.22 ? 1 : diff < 0.58 ? (rng() < 0.58 ? 1 : 2) : (rng() < 0.42 ? 2 : 3);
+      // A full three-lane spike row is a forced jump, exactly like a triple.
+      // Reserve the same breathing room so two walls can never land inside the
+      // narrow slice of a jump arc where neither bounce can clear them.
+      if (n === 3) {
+        z = Math.max(z, lastForcedZ + safeGap);
+        if (z > finishZ - 18) break;
+        lastForcedZ = z;
+      }
       const lanes = pickLanes(n, rng);
       lanes.forEach(l => add('spike', l, z));
       if (n < 3) coin(safeLane(lanes, rng), z, 0.95);
@@ -181,12 +189,23 @@ export function generateEvents(level) {
     }
   }
 
+  // Some patterns (notably slalom and the pad spike wall) can project hazards
+  // past the point where the loop's entrance check stopped. Clear a generous
+  // run-in so nothing can ambush the player on the finish portal.
+  const clearFinishZ = finishZ - 12;
+  for (let i = events.length - 1; i >= 0; i--) {
+    const ev = events[i];
+    if (ev.type === 'coin' || ev.type === 'finish') continue;
+    if (ev.z > clearFinishZ) events.splice(i, 1);
+  }
+
   // Guaranteed breather and a last reward before the portal.
-  z = Math.max(z, finishZ - 22);
-  coin(1, z + 3, 1.1);
-  coin(0, z + 6.5, 1.6);
-  coin(2, z + 10, 1.1);
-  add('finish', 0, finishZ);
+  const rewardZ = finishZ - 26;
+  coin(1, rewardZ, 1.1);
+  coin(0, rewardZ + 3.5, 1.6);
+  coin(2, rewardZ + 7, 1.1);
+  // Push directly: the occupancy map may still hold a culled hazard row.
+  events.push({ type: 'finish', lane: 0, z: finishZ });
 
   events.sort((a, b) => a.z - b.z || a.lane - b.lane);
   return events;

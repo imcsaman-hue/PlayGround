@@ -941,19 +941,20 @@ export class World {
     this.playerBody.position.set(0, 0, 0);
   }
 
-  placePlayer(z) {
+  placePlayer(z, lane = 1) {
     const p = this.player;
-    p.x = 0; p.targetX = 0; p.lane = 1;
+    const x = LANES[lane] ?? 0;
+    p.x = x; p.targetX = x; p.lane = lane;
     p.y = GROUND_Y; p.vy = 0; p.grounded = true;
     p.angle = 0; p.tilt = 0; p.squash = 1;
     p.z = z; p.startZ = z; p.alive = true; p.jumpHeld = false;
     this.playerRoot.visible = true;
-    this.playerRoot.position.set(0, GROUND_Y, z);
+    this.playerRoot.position.set(x, GROUND_Y, z);
     this.playerRoot.scale.set(1, 1, 1);
     if (this.playerBody) this.playerBody.rotation.set(0, 0, 0);
     if (this.shadow) this.shadow.visible = true;
     if (this.trailMesh) this.trailMesh.visible = true;
-    this.trailHistory = Array.from({ length: this.trailSegments || 28 }, () => new THREE.Vector3(0, GROUND_Y, z));
+    this.trailHistory = Array.from({ length: this.trailSegments || 28 }, () => new THREE.Vector3(x, GROUND_Y, z));
     this.crashed = false;
     this.finished = false;
   }
@@ -1144,9 +1145,41 @@ export class World {
     this.mode = 'playing';
   }
 
+  // Practice checkpoints are fixed distances apart, so one can land on top of
+  // a hazard. Walk backwards until we find a lane with a clear runway, then
+  // respawn there instead of dropping the player straight into a spike.
+  findSafeRespawn(z) {
+    const events = this.runtime?.events || [];
+    const hazards = events.filter(ev => ev.type !== 'coin' && ev.type !== 'finish' && ev.type !== 'pad');
+    const startZ = Math.max(4, z);
+    let fallback = { z: startZ, lane: 1, clear: -1 };
+    for (let back = 0; back <= 16; back += 1) {
+      const zz = startZ - back;
+      if (zz < 4) break;
+      let best = { z: zz, lane: 1, clear: -1 };
+      for (let lane = 0; lane < 3; lane++) {
+        let next = Infinity;
+        let overlap = false;
+        for (const ev of hazards) {
+          const blocks = ev.type === 'hurdle' || ev.lane === lane;
+          if (!blocks) continue;
+          const d = ev.z - zz;
+          if (Math.abs(d) < 2.6) overlap = true;
+          if (d >= -0.4 && d < next) next = d;
+        }
+        const clear = overlap ? -1 : next;
+        if (clear > best.clear) best = { z: zz, lane, clear };
+      }
+      if (best.clear > fallback.clear) fallback = best;
+      if (best.clear > 7) return best;
+    }
+    return fallback;
+  }
+
   respawn(z) {
+    const spawn = this.findSafeRespawn(z);
     this.particles.clear();
-    this.placePlayer(z);
+    this.placePlayer(spawn.z, spawn.lane);
     this.coins = 0;
     for (const ev of this.eventObjects) {
       if (ev.type === 'coin') { ev.collected = false; ev.group.visible = true; }
