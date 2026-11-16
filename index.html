@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#03030c">
+  <meta name="description" content="Geometry Dash 3D — a free 3D rhythm platformer with 22 original-themed levels, all skins unlocked, and a built-in level editor.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <title>Geometry Dash 3D — Free Rhythm Platformer</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <canvas id="gameCanvas" aria-label="Geometry Dash 3D game world"></canvas>
+  <div class="screen-fx" aria-hidden="true"></div>
+  <div class="scanlines" aria-hidden="true"></div>
+
+  <!-- ============================ MENU ============================ -->
+  <section id="menuScreen" class="screen menu-screen active">
+    <header class="nav">
+      <button class="brand" data-screen="menu" aria-label="Geometry Dash 3D home">
+        <span class="brand-mark"><i></i></span>
+        <span class="brand-text">GEOMETRY <b>DASH</b> <em>3D</em></span>
+      </button>
+      <nav class="nav-links">
+        <button class="nav-link active" data-action="play">PLAY</button>
+        <button class="nav-link" data-screen="levels">LEVELS</button>
+        <button class="nav-link" data-screen="skins">SKINS</button>
+        <button class="nav-link" data-screen="editor">EDITOR</button>
+      </nav>
+      <div class="nav-actions">
+        <span class="free-pill"><i></i> ALL FREE</span>
+        <button id="soundBtn" class="icon-btn" aria-label="Toggle sound" title="Sound (M)">
+          <span class="sound-on">◖))</span><span class="sound-off">◖×</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="menu-main">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="live-dot"></span> THE 3D RHYTHM PLATFORMER <span class="eyebrow-sep">/</span> 22 LEVELS</div>
+        <h1 class="hero-title">
+          <span class="title-top">GEOMETRY</span>
+          <span class="title-main">DASH<span class="title-badge">3D</span></span>
+        </h1>
+        <p class="hero-sub">Run the neon grid. Jump the impossible.<br>Build your own beautiful madness.</p>
+        <div class="hero-cta">
+          <button id="heroPlayBtn" class="btn btn-primary btn-play" data-action="play">
+            <span class="btn-play-icon">▶</span>
+            <span class="btn-stack"><b>PLAY NOW</b><small id="heroPlayLabel">STEREO MADNESS</small></span>
+          </button>
+          <button class="btn btn-ghost" data-screen="editor">
+            <span class="btn-ico">✦</span>
+            <span class="btn-stack"><b>LEVEL EDITOR</b><small>MAKE IT YOURS</small></span>
+          </button>
+        </div>
+        <div class="feature-row">
+          <span><b>22</b> themed worlds</span>
+          <span><b>12</b> free skins</span>
+          <span><b>∞</b> custom levels</span>
+        </div>
+      </div>
+
+      <aside class="hero-side">
+        <div class="side-card now-card">
+          <div class="side-card-label"><span class="live-dot small"></span> NOW PLAYING</div>
+          <div class="now-art" id="nowArt">
+            <div class="now-num">01</div>
+            <div class="now-glyph">◈</div>
+            <div class="now-ring"></div>
+          </div>
+          <div class="now-info">
+            <h3 id="nowTitle">Stereo Madness</h3>
+            <div class="now-meta"><span id="nowDiff">EASY</span><span>3D</span><span id="nowBest">BEST 0%</span></div>
+            <div class="mini-bar"><i id="nowBestBar" style="width:0%"></i></div>
+          </div>
+        </div>
+        <div class="side-card stat-strip">
+          <div><b id="statStars">0</b><span>STARS</span></div>
+          <div><b id="statLevels">0/22</b><span>COMPLETE</span></div>
+          <div><b id="statAttempts">0</b><span>ATTEMPTS</span></div>
+        </div>
+      </aside>
+    </main>
+
+    <footer class="menu-foot">
+      <div class="controls-hint">
+        <span class="key">SPACE</span><span>Jump</span>
+        <span class="key">A</span><span class="key">D</span><span>Switch lane</span>
+        <span class="key">ESC</span><span>Pause</span>
+      </div>
+      <div class="foot-note">NO ADS <span>·</span> NO PAYWALLS <span>·</span> EVERYTHING UNLOCKED</div>
+    </footer>
+  </section>
+
+  <!-- ============================ LEVEL SELECT ============================ -->
+  <section id="levelsScreen" class="screen panel-screen">
+    <header class="subnav">
+      <button class="back-btn" data-screen="menu"><span>←</span> MENU</button>
+      <div class="subnav-title"><span class="kicker">WORLD SELECT</span><h2>CHOOSE YOUR CHAOS</h2></div>
+      <div class="subnav-stats">
+        <span><i class="dot-green"></i> ALL 22 UNLOCKED</span>
+        <button id="levelsEditorBtn" class="btn btn-tiny" data-screen="editor">+ CREATE LEVEL</button>
+      </div>
+    </header>
+    <div class="levels-body">
+      <div class="levels-intro">
+        <div>
+          <p class="micro">THE ORIGINAL THEMES, REIMAGINED IN 3D</p>
+          <h1>22 WORLDS.<br><em>ZERO</em> LOCKED.</h1>
+        </div>
+        <p class="levels-desc">Every level, colour and skin is free from the first second. Chase a new personal best, or jump straight into the editor and build a world nobody has survived yet.</p>
+        <div class="progress-orb"><span id="worldProgress">0%</span><small>WORLD<br>COMPLETE</small></div>
+      </div>
+      <div id="levelGrid" class="level-grid"></div>
+      <div id="customSection" class="custom-section hidden">
+        <div class="section-line"><span>YOUR LEVELS</span><i></i></div>
+        <div id="customGrid" class="level-grid custom-grid"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ SKINS ============================ -->
+  <section id="skinsScreen" class="screen panel-screen">
+    <header class="subnav">
+      <button class="back-btn" data-screen="menu"><span>←</span> MENU</button>
+      <div class="subnav-title"><span class="kicker">CHARACTER LAB</span><h2>ALL SKINS. ALL FREE.</h2></div>
+      <div class="subnav-stats"><span><i class="dot-green"></i> 12/12 UNLOCKED</span></div>
+    </header>
+    <div class="skins-body">
+      <aside class="skin-preview-card">
+        <div class="preview-badge">LIVE PREVIEW</div>
+        <canvas id="skinPreview" width="360" height="360"></canvas>
+        <div class="preview-glow"></div>
+        <div class="preview-name-row">
+          <div><span class="micro">EQUIPPED</span><h2 id="skinName">Classic</h2></div>
+          <span class="rarity-pill">FREE</span>
+        </div>
+        <p id="skinNote" class="skin-note">The one that started it all.</p>
+        <div class="color-lab">
+          <div class="color-head"><span>COLOR LAB</span><button id="randomColorsBtn" class="text-btn">↻ RANDOMIZE</button></div>
+          <div class="color-row">
+            <label class="color-field"><span>BODY</span><input id="primaryColor" type="color" value="#2ee6ff"><i></i></label>
+            <label class="color-field"><span>DETAIL</span><input id="secondaryColor" type="color" value="#ffffff"><i></i></label>
+            <label class="color-field"><span>GLOW</span><input id="glowColor" type="color" value="#00d9ff"><i></i></label>
+          </div>
+          <div class="preset-row" id="presetRow"></div>
+        </div>
+        <button id="skinsPlayBtn" class="btn btn-primary wide" data-action="play">TAKE IT FOR A RUN <span>→</span></button>
+      </aside>
+      <div class="skins-list-wrap">
+        <div class="skins-list-head"><span>12 ICONS</span><span>CLICK TO EQUIP</span></div>
+        <div id="skinGrid" class="skin-grid"></div>
+        <div class="free-banner">
+          <span class="free-icon">∞</span>
+          <div><b>NO UNLOCKS. NO GRIND.</b><p>Every icon and every colour is available immediately. Always.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ EDITOR ============================ -->
+  <section id="editorScreen" class="screen editor-screen">
+    <div class="editor-topbar ui-panel">
+      <button id="editorBackBtn" class="back-btn"><span>←</span> EXIT</button>
+      <div class="editor-title">
+        <span class="kicker">LEVEL EDITOR</span>
+        <input id="levelNameInput" class="level-name-input" maxlength="28" value="MY LEVEL" aria-label="Level name">
+      </div>
+      <div class="editor-top-actions">
+        <span id="editorSaved" class="save-state">SAVED LOCALLY</span>
+        <button id="generateBtn" class="btn btn-tiny">✦ AUTO-BUILD</button>
+        <button id="exportBtn" class="btn btn-tiny">EXPORT</button>
+        <button id="importBtn" class="btn btn-tiny">IMPORT</button>
+        <button id="saveBtn" class="btn btn-tiny">SAVE</button>
+        <button id="testBtn" class="btn btn-primary btn-tiny">▶ TEST</button>
+      </div>
+    </div>
+
+    <div class="editor-tools ui-panel">
+      <div class="panel-label">OBJECTS</div>
+      <button class="tool-btn active" data-tool="spike"><span class="tool-ico spike-ico"></span><b>Spike</b><kbd>1</kbd></button>
+      <button class="tool-btn" data-tool="block"><span class="tool-ico block-ico"></span><b>Block</b><kbd>2</kbd></button>
+      <button class="tool-btn" data-tool="gate"><span class="tool-ico gate-ico"></span><b>Gate</b><kbd>3</kbd></button>
+      <button class="tool-btn" data-tool="saw"><span class="tool-ico saw-ico"></span><b>Saw</b><kbd>4</kbd></button>
+      <button class="tool-btn" data-tool="hurdle"><span class="tool-ico hurdle-ico"></span><b>Hurdle</b><kbd>5</kbd></button>
+      <button class="tool-btn" data-tool="pad"><span class="tool-ico pad-ico"></span><b>Jump pad</b><kbd>6</kbd></button>
+      <button class="tool-btn" data-tool="coin"><span class="tool-ico coin-ico"></span><b>Coin</b><kbd>7</kbd></button>
+      <button class="tool-btn finish-tool" data-tool="finish"><span class="tool-ico finish-ico"></span><b>Finish</b><kbd>8</kbd></button>
+      <button class="tool-btn erase-tool" data-tool="erase"><span class="tool-ico erase-ico"></span><b>Erase</b><kbd>X</kbd></button>
+    </div>
+
+    <aside class="editor-inspector ui-panel">
+      <div class="panel-label">WORLD</div>
+      <label class="field-label">THEME</label>
+      <select id="themeSelect" class="select"></select>
+      <div class="theme-swatch-row" id="themeSwatch">
+        <i></i><i></i><i></i>
+      </div>
+      <label class="field-label">TRACK LENGTH <span id="lengthValue">430</span></label>
+      <input id="lengthRange" class="range" type="range" min="220" max="1200" step="20" value="430">
+      <label class="field-label">SPEED <span id="speedValue">14.0</span></label>
+      <input id="speedRange" class="range" type="range" min="11" max="20" step="0.5" value="14">
+      <div class="editor-stats">
+        <div><b id="objectCount">0</b><span>OBJECTS</span></div>
+        <div><b id="editorCoins">0</b><span>COINS</span></div>
+      </div>
+      <div class="editor-help">
+        <b>BUILD CONTROLS</b>
+        <p><span>CLICK</span> place object</p>
+        <p><span>RIGHT CLICK</span> erase</p>
+        <p><span>SCROLL</span> fly forward</p>
+        <p><span>1–8</span> choose object</p>
+      </div>
+    </aside>
+
+    <div class="editor-bottom ui-panel">
+      <button id="viewBackBtn" class="round-btn" title="Fly back">◀</button>
+      <div class="timeline-wrap">
+        <div class="timeline-labels"><span>START</span><span id="viewLabel">Z 40</span><span id="finishLabel">FINISH</span></div>
+        <input id="viewRange" class="range timeline-range" type="range" min="10" max="410" step="2" value="40">
+      </div>
+      <button id="viewForwardBtn" class="round-btn" title="Fly forward">▶</button>
+      <div class="editor-hint"><span class="key">SCROLL</span> to fly <span class="key">X</span> erase <span class="key">ESC</span> exit</div>
+    </div>
+    <div id="editorCursorInfo" class="cursor-info">LANE 2 · Z 0 · SPIKE</div>
+  </section>
+
+  <!-- ============================ HUD ============================ -->
+  <div id="hud" class="hud hidden">
+    <div class="hud-top">
+      <button id="pauseBtn" class="hud-icon" aria-label="Pause">Ⅱ</button>
+      <div class="hud-level">
+        <span id="hudLevelNum" class="hud-num">01</span>
+        <div><span id="hudDiff" class="hud-diff">EASY</span><b id="hudLevelName">STEREO MADNESS</b></div>
+      </div>
+      <div class="hud-progress-wrap">
+        <div class="hud-progress"><i id="hudProgressBar"></i><span id="hudProgressPct">0%</span></div>
+        <div class="hud-subline"><span id="hudAttempts">ATTEMPT 1</span><span id="hudPractice" class="hidden">PRACTICE</span></div>
+      </div>
+      <div class="hud-right">
+        <span id="hudCoins" class="coin-counter"><i></i> 0/0</span>
+        <button id="hudMuteBtn" class="hud-icon" aria-label="Toggle sound">◖))</button>
+      </div>
+    </div>
+    <div id="jumpHint" class="jump-hint"><span class="key">SPACE</span> / CLICK TO JUMP <span class="divider">·</span> <span class="key">A</span><span class="key">D</span> CHANGE LANE</div>
+    <div id="checkpointToast" class="checkpoint-toast hidden">CHECKPOINT <span>REACHED</span></div>
+    <div class="touch-controls" id="touchControls">
+      <button id="touchLeft" class="touch-btn touch-lane" aria-label="Move left">◀</button>
+      <button id="touchJump" class="touch-btn touch-jump" aria-label="Jump">JUMP</button>
+      <button id="touchRight" class="touch-btn touch-lane" aria-label="Move right">▶</button>
+    </div>
+  </div>
+
+  <!-- ============================ MODALS ============================ -->
+  <div id="pauseModal" class="modal-layer hidden">
+    <div class="modal pause-modal">
+      <span class="kicker">RUN PAUSED</span>
+      <h2>TAKE A BREATH</h2>
+      <p class="modal-sub">The spikes will wait. Probably.</p>
+      <div class="pause-stats">
+        <div><b id="pauseProgress">0%</b><span>PROGRESS</span></div>
+        <div><b id="pauseCoins">0/0</b><span>COINS</span></div>
+        <div><b id="pauseAttempts">1</b><span>ATTEMPT</span></div>
+      </div>
+      <label class="toggle-row">
+        <span><b>PRACTICE MODE</b><small>Checkpoints + instant respawns</small></span>
+        <input id="practiceToggle" type="checkbox"><i class="toggle"></i>
+      </label>
+      <div class="modal-actions">
+        <button id="resumeBtn" class="btn btn-primary">RESUME <span>▶</span></button>
+        <button id="restartBtn" class="btn btn-ghost">RESTART</button>
+        <button id="quitBtn" class="btn btn-quiet">LEVEL SELECT</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="deathModal" class="modal-layer hidden">
+    <div class="modal death-modal">
+      <div class="death-icon">✖</div>
+      <span class="kicker">ATTEMPT <span id="deathAttempt">1</span></span>
+      <h2>WRECKED.</h2>
+      <p class="modal-sub" id="deathQuip">The spikes send their regards.</p>
+      <div class="pct-display"><span id="deathPct">0</span><small>%</small></div>
+      <div class="death-bar"><i id="deathBar"></i><b id="deathBest">BEST 0%</b></div>
+      <div class="death-meta"><span id="deathCoins">0 / 0 COINS</span><span id="deathCheckpoint">NO CHECKPOINT</span></div>
+      <div class="modal-actions">
+        <button id="retryBtn" class="btn btn-primary">TRY AGAIN <span>↻</span></button>
+        <button id="deathPracticeBtn" class="btn btn-ghost">PRACTICE MODE</button>
+        <button id="deathQuitBtn" class="btn btn-quiet">LEVEL SELECT</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="winModal" class="modal-layer hidden">
+    <div class="modal win-modal">
+      <div class="win-burst"></div>
+      <span class="kicker">LEVEL COMPLETE</span>
+      <div class="win-title">PERFECT<span>RUN</span></div>
+      <h2 id="winLevelName">STEREO MADNESS</h2>
+      <p class="modal-sub" id="winSub">The grid bows. You are the geometry now.</p>
+      <div class="win-stats">
+        <div><b>100%</b><span>COMPLETE</span></div>
+        <div><b id="winCoins">0/0</b><span>COINS</span></div>
+        <div><b id="winAttempts">1</b><span>ATTEMPTS</span></div>
+        <div><b id="winTime">0:00</b><span>TIME</span></div>
+      </div>
+      <div class="win-stars">★★★★★★★★★★</div>
+      <div class="modal-actions">
+        <button id="nextBtn" class="btn btn-primary">NEXT LEVEL <span>→</span></button>
+        <button id="replayBtn" class="btn btn-ghost">REPLAY</button>
+        <button id="winLevelsBtn" class="btn btn-quiet">LEVEL SELECT</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <div id="loading" class="loading-layer">
+    <div class="loading-cube"><i></i><i></i><i></i></div>
+    <span>BUILDING THE GRID</span>
+  </div>
+
+  <noscript><div class="noscript">This game needs JavaScript enabled.</div></noscript>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
